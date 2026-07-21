@@ -1,14 +1,13 @@
-FROM python:3.12-slim-bookworm AS builder
+FROM python:3.12-slim AS builder
 WORKDIR /build
 COPY app/requirements.txt .
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir --prefix=/install -r requirements.txt
 
-FROM python:3.12-slim-bookworm
-RUN apt-get update && apt-get upgrade -y && apt-get clean && rm -rf /var/lib/apt/lists/*
-# Upgrade pip in the runtime image too — this fixes the HIGH CVE
+FROM python:3.12-alpine
+RUN apk update && apk upgrade && rm -rf /var/cache/apk/*
 RUN pip install --upgrade pip
-RUN useradd --create-home --uid 1000 appuser
+RUN adduser --disabled-password --uid 1000 appuser
 WORKDIR /home/appuser
 COPY --from=builder /install /usr/local
 COPY app/ ./app/
