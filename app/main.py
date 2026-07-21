@@ -1,6 +1,6 @@
 import os
 from flask import Flask, jsonify, request, abort
-from tasks import TaskStore
+from .tasks import TaskStore
 
 VERSION = os.getenv("APP_VERSION", "1.0.0")
 app = Flask(__name__)
